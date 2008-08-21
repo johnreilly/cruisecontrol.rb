@@ -5,11 +5,15 @@ CHANGES
 -------
 <%= @build.changeset %>
 
+<% if !Configuration.email_full_build_log %>
 <% unless @failures_and_errors.empty? -%>
 TEST FAILURES AND ERRORS
 -----------------------
 <%= @failures_and_errors %>
 
+<% end -%>
+<% else -%>
+<%= @build.output %>
 <% end -%>
 See <%= "#{@build.url}" %> for details.
 <% else -%>

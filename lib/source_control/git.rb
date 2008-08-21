@@ -11,6 +11,7 @@ module SourceControl
       @interactive = options.delete(:interactive)
       @repository = options.delete(:repository)
       @branch = options.delete(:branch)
+      @include_submodules = true
       raise "don't know how to handle '#{options.keys.first}'" if options.length > 0
     end
 
@@ -35,6 +36,10 @@ module SourceControl
         git('checkout', [@branch])
       end
       git("reset", ['--hard', revision.number]) if revision
+      if @include_submodules
+	git("submodule",["init"])
+	git("submodule",["update"])
+      end
     end
 
     # TODO implement clean_checkout as "git clean -d" - much faster
@@ -54,6 +59,7 @@ module SourceControl
       else
         git("reset", ["--hard"])
       end
+      git("submodule",["update"]) if @include_submodules
     end
 
     def up_to_date?(reasons = [])
